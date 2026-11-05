@@ -145,18 +145,20 @@ Adding another host means implementing one `TranscriptSource` (where its session
 ## Developer integration
 
 Use `memu memorize` to turn application-owned conversations into memory and skills.
-See the [developer guide](docs/developer.md) for the input format and integration workflow.
 
 ## CLI
 
 With memU Cloud, sign in at [memu.so](https://memu.so) to view your memory files. With a local installation, memory lives in the shared store configured by `MEMU_DB` in `~/.memu/config.env` — typically `~/.memu/memu.sqlite3` for local SQLite, or a Postgres DSN.
 
-Once installed, your agent retrieves relevant memory automatically before answering. To retrieve manually, run the adapter for your host:
+Once installed, your agent retrieves relevant memory automatically before answering.
+To retrieve manually, run the adapter for your host:
 
 ```bash
 memu-codex retrieve "What should I remember about this project?"
 # or: memu-claude-code / memu-cursor / memu-openclaw / memu-hermes / memu-workbuddy / memu-cola / memu-pi / memu-agent
 ```
+
+Host retrieval returns compact JSON with at most five self-contained `hits` plus independent `resources`. Each hit combines matched `text` with its source's `description`, `track`, and local mirror `path` (or inline `content` when no mirror is available). Its `score` describes the matched segment; `created_at` and `updated_at` describe the source file when available. Hits retain segment order, including excerpts whose source is missing; sources without matched excerpts remain source-only hits. Resources contain `path`, `caption`, and available scores/timestamps. Database IDs and scope metadata are omitted from the agent-facing output.
 
 Install or invoke the CLI directly:
 
